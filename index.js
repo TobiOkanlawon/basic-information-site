@@ -1,60 +1,18 @@
-const fs = require("fs");
-const http = require("http");
-const url = require("url");
+const express = require("express");
+const path = require("path");
+const app = express();
+const port = 3000;
 
-let index;
-let contact;
-let about;
-let errorPage;
-
-fs.readFile("./routes/index.html", (err, data) => {
-  if (!err) {
-    index = data;
-  } else {
-    throw Error(err);
-  }
-});
-fs.readFile("./routes/contact.html", (err, data) => {
-  if (!err) {
-    contact = data;
-  }
+app.get("/", (req, res) => {
+  res.sendFile(path.join(__dirname, "/routes/", "index.html"));
 });
 
-fs.readFile("./routes/about.html", (err, data) => {
-  if (!err) {
-    about = data;
-  }
+app.get("/contact", (req, res) => {
+  res.sendFile(path.join(__dirname + "/routes" + `${req.url}.html`));
 });
 
-fs.readFile("./routes/404.html", (err, data) => {
-  if (!err) {
-    errorPage = data;
-  }
+app.get("/about", (req, res) => {
+  res.sendFile(path.join(__dirname + "/routes" + `${req.url}.html`));
 });
 
-http
-  .createServer((req, res) => {
-    const queryPath = url.parse(req.url, true).pathname;
-    console.log(queryPath);
-
-    switch (queryPath) {
-      case "/":
-        res.writeHead(200, { "Content-Type": "text/html" });
-        res.end(index);
-        break;
-      case "/about":
-        res.writeHead(200, { "Content-Type": "text/html" });
-        res.end(about);
-        break;
-      case "/contact":
-        res.writeHead(200, { "Content-Type": "text/html" });
-        res.end(contact);
-        break;
-
-      default:
-        res.writeHead(404, { "Content-Type": "text/html" });
-        res.end(errorPage);
-        break;
-    }
-  })
-  .listen(3000);
+app.listen(port, () => console.log(`Example app listening on port ${port}!`));
