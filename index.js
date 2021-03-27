@@ -15,4 +15,8 @@ app.get("/about", (req, res) => {
   res.sendFile(path.join(__dirname + "/routes" + `${req.url}.html`));
 });
 
+app.use(function (req, res, next) {
+  return res.status(404).sendFile(path.join(__dirname + "/routes/404.html"));
+});
+
 app.listen(port, () => console.log(`Example app listening on port ${port}!`));
